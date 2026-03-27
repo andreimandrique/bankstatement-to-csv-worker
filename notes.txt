@@ -1,0 +1,3 @@
+celery -A tasks worker --loglevel=info -P solo    
+    
+.\venv\Scripts\Activate.ps1
