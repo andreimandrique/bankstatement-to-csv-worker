@@ -2,6 +2,7 @@ import os
 import boto3
 import pdfplumber
 import csv
+import requests
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -20,10 +21,12 @@ def process_bankstatement(**kwargs):
     file_bucket = kwargs.get('fileBucket') 
     file_key = kwargs.get('fileKey')
     file_name = kwargs.get('fileName') 
+    user_id = kwargs.get('userId')
 
     print(f"Bucket: {file_bucket}")
     print(f"Key: {file_key}")
     print(f"Name: {file_name}")
+    print(f"User Id: {user_id}")
 
     s3.download_file(file_bucket, file_key, f"{file_name}.pdf")
 
@@ -67,5 +70,24 @@ def process_bankstatement(**kwargs):
 
     Path(pdf_filename).unlink(missing_ok=True)
     Path(csv_filename).unlink(missing_ok=True)
+
+    url = os.getenv('BACKEND_URL')
+    data = {
+        "success": 'true',
+        "user_id": user_id
+    }
+
+    try:
+        response = requests.post(f"{url}/webhook", json=data, timeout=10)
+        
+        if response.ok: 
+            print("Success!")
+            print(response.json())
+        else:
+            print(f"Server returned an error: {response.status_code}")
+            print(f"Response Body: {response.text}")
+
+    except requests.exceptions.RequestException as e:
+        print(f"Connection error occurred: {e}")
 
     return True
