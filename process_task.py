@@ -78,16 +78,7 @@ def process_bankstatement(**kwargs):
     }
 
     try:
-        response = requests.post(f"{url}/webhook", json=data, timeout=10)
-        
-        if response.ok: 
-            print("Success!")
-            print(response.json())
-        else:
-            print(f"Server returned an error: {response.status_code}")
-            print(f"Response Body: {response.text}")
-
+        requests.post(f"{url}/transaction", json=data, timeout=10)
     except requests.exceptions.RequestException as e:
-        print(f"Connection error occurred: {e}")
+        print(f"request error: {e}")
 
-    return True
