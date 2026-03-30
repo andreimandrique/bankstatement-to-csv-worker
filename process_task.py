@@ -21,12 +21,7 @@ def process_bankstatement(**kwargs):
     file_bucket = kwargs.get('fileBucket') 
     file_key = kwargs.get('fileKey')
     file_name = kwargs.get('fileName') 
-    user_id = kwargs.get('userId')
-
-    print(f"Bucket: {file_bucket}")
-    print(f"Key: {file_key}")
-    print(f"Name: {file_name}")
-    print(f"User Id: {user_id}")
+    google_id = kwargs.get('googleId')
 
     s3.download_file(file_bucket, file_key, f"{file_name}.pdf")
 
@@ -74,7 +69,7 @@ def process_bankstatement(**kwargs):
     url = os.getenv('BACKEND_URL')
     data = {
         "success": 'true',
-        "user_id": user_id
+        "google_id": google_id
     }
 
     try:
