@@ -67,13 +67,20 @@ def process_bankstatement(**kwargs):
     Path(csv_filename).unlink(missing_ok=True)
 
     url = os.getenv('BACKEND_URL')
+    celery_signature = os.getenv('CELERY_SIGNATURE')
+
     data = {
         "success": 'true',
         "google_id": google_id
     }
+    
+    headers = {
+        "Content-Type": "application/json",
+        "X-Celery-Signature": celery_signature
+    }
 
     try:
-        requests.post(f"{url}/transaction", json=data, timeout=10)
+        requests.post(f"{url}/transaction", json=data, headers=headers, timeout=10)
     except requests.exceptions.RequestException as e:
         print(f"request error: {e}")
 
