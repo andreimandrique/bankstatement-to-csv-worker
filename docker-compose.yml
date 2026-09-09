@@ -1,0 +1,8 @@
+services:
+  celery_worker:
+    build: .
+    env_file:
+      - .env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: always
